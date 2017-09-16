@@ -1,0 +1,117 @@
+def pre-dict_unlock_content(data={}):
+""" Predictor for Unlock Con-tent from mod-el/58fa79c37e0a8d6c300037bc
+Predictive model by BigML - Machine Learning Made Easy """
+import re
+tm_tokens = 'tokens_only'
+tm_full_term = 'full_terms_only'
+tm_all = 'all'
+def term_matches(text, field_name, term):
+""" Counts the number of oc-curences of term and its vari-ants in text """
+forms_list = term_forms[field_name].get(term, [term])
+options = term_analysis[field_name]
+token_mode = op-tions.get('token_mode', tm_tokens)
+case_sensitive = op-tions.get('case_sensitive', False)
+first_term = forms_list[0]
+if token_mode == tm_full_term:
+return full_term_match(text, first_term, case_sensitive)
+else:
+# In token_mode='all' we will match full terms using equals and
+# tokens using contains
+if token_mode == tm_all and len(forms_list) == 1:
+pattern = re.compile(r'^.+\b.+$', re.U)
+if re.match(pattern, first_term):
+return full_term_match(text, first_term, case_sensitive)
+return term_matches_tokens(text, forms_list, case_sensitive)
+def full_term_match(text, full_term, case_sensitive):
+"""Counts the match for full terms according to the case_sensitive
+option  """
+if not case_sensitive:
+text = text.lower()
+full_term = full_term.lower()
+return 1 if text == full_term else 0
+def get_tokens_flags(case_sensitive):
+"""Returns flags for regular expression matching depending on text analysis options  """
+flags = re.U
+if not case_sensitive:
+flags = (re.I | flags)
+return flags
+def term_matches_tokens(text, forms_list, case_sensitive):
+""" Counts the number of occur-rences of the words in forms_list in the text """
+flags = get_tokens_flags(case_sensitive)
+expression = ur'(\b|_)%s(\b|_)' %'(\\b|_)|(\\b|_)'.join(forms_list)
+pattern = re.compile(expression, flags=flags)
+matches = re.findall(pattern, text)
+return len(matches)
+term_analysis = {
+"game_name": {
+"token_mode": 'all',
+"case_sensitive": True,   },  }
+term_forms = {
+"game_name": {      },   }
+if (data.get('levels') is None):
+return u'1'
+if (data['levels'] == '1'):
+if(data.get('game_name') is None):
+return u'1'
+if(term_matches(data['game_name'], "game_name", "2") > 0):
+if (data.get('item_upgrade') is None): return u'0'
+if (data['item_upgrade'] == '1'): return u'0'
+if (data['item_upgrade'] == '0'): return u'1'
+if (term_matches(data['game_name'], "game_name", "2") <= 0):
+if (data.get('power_up') is None): return u'1'
+if (data['power_up'] == '1'):
+if (data.get('noncumulative') is None): return u'1'
+if (data['noncumulative'] == '1'): if (da-ta.get('request_friend_help') is None):
+return u'1'
+if (data['request_friend_help'] == '1'):
+if (data.get('random_elements') is None): return u'1'
+if (data['random_elements'] == '1'):
+if (da-ta.get('competitive_play') is None): return u'1'
+if (data['competitive_play'] == '1'):
+if (da-ta.get('cooperative_play') is None): return u'1'
+if (data['cooperative_play'] == '1'): return u'1'
+if (data['cooperative_play'] == '0'): if(term_matches(data['game_name'], "game_name", "Blast") > 0):
+return u'1'
+if(term_matches(data['game_name'], "game_name", "Blast") <= 0):
+return u'0'
+if (data['competitive_play'] == '0'):
+if (data.get('iap') is None):
+return u'1'
+if (data['iap'] > 1):
+return u'0'
+if (data['iap'] <= 1):
+return u'1'
+if (data['random_elements'] == '0'): 
+return u'0'
+if (data['request_friend_help'] == '0'): 
+return u'1'
+if (data['noncumulative'] == '0'):
+if (data.get('daily_offer') is None): 
+return u'1'
+if (data['daily_offer'] == '1'):
+if (data.get('skill_tree') is None): return u'0'
+if (data['skill_tree'] == '0'):
+if (data.get('unique_offer') is None):
+return u'1'
+if (data['unique_offer'] == '1'):
+return u'1'
+if (data['unique_offer'] == '0'):        
+return u'0'
+if (data['skill_tree'] == '1'):
+return u'0'
+if (data['daily_offer'] == '0'):
+return u'1'
+if (data['power_up'] == '0'):
+if (data.get('time_skips') is None):
+return u'0'
+if (data['time_skips'] == '1'):
+return u'0'
+if (data['time_skips'] == '0'):
+if (data.get('custom') is None):
+return u'1'
+if (data['custom'] == '1'):
+return u'1'
+if (data['custom'] == '0'):
+return u'0'
+if (data['levels'] == '0'):
+return u'0' 
